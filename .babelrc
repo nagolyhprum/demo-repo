@@ -1,0 +1,12 @@
+{
+  "presets" : ["env", "react"],
+  "plugins": [
+    ["module-resolver", {
+      "alias": {
+        "reducers": "./src/client/reducers",
+        "components": "./src/client/components",
+        "actions": "./src/client/actions"
+      }    
+    }]
+  ]
+}
