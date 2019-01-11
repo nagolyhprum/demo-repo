@@ -1,24 +1,25 @@
 import 'babel-polyfill';
-
 import React from "react";
 import ReactDom from "react-dom";
-
 import { Provider } from "react-redux";
 import { applyMiddleware, createStore } from "redux";
-
 import Total from "./components/total";
 import reducers from "./reducers";
+import createSagaMiddleware from 'redux-saga'
+import mySaga from './sagas'
 
-function* gen() {
-  yield* ["a", "b", "c"];
+const sagaMiddleware = createSagaMiddleware()
+
+const middlewares = [sagaMiddleware];
+ 
+if (process.env.NODE_ENV === `development`) {
+  const { logger } = require(`redux-logger`);
+  middlewares.push(logger);
 }
 
-async function somethingElse() {
-  const value = await Promise.resolve(true);
-  console.log(value);
-}
+const store = createStore(reducers, applyMiddleware(...middlewares));
 
-const store = createStore(reducers);
+sagaMiddleware.run(mySaga)
 
 ReactDom.render(
   <Provider store={store}>

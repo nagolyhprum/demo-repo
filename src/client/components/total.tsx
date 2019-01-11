@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 
-import { add, sub } from "../actions/total";
+import { add, sub, fetchList } from "../actions/total";
 
 import { IState } from "../reducers";
 
@@ -11,6 +11,7 @@ interface ITotalProps {
   total: number;
   add(): void;
   sub(): void;
+  fetchList(): void;
 }
 
 class Total extends Component<ITotalProps> {
@@ -20,6 +21,8 @@ class Total extends Component<ITotalProps> {
         <button onClick={this.props.sub}>-</button>
         <span>{this.props.total}</span>
         <button onClick={this.props.add}>+</button>
+
+        <button onClick={this.props.fetchList}>Load List</button>
       </div>
     );
   }
@@ -30,4 +33,5 @@ export default connect((state: IState) => ({
 }), {
   add,
   sub,
+  fetchList
 })(Total);
