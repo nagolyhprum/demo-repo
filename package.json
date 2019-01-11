@@ -6,7 +6,7 @@
     "lint": "tslint -c tslint.json '**/*.tsx'",
     "watchServer": "parcel watch src/server/index.tsx --no-cache --target node --out-dir dist/server --no-source-maps",
     "watchClient": "parcel watch src/client/index.html --no-cache --target browser --out-dir dist/client --no-source-maps",
-    "dev": "npm run watchServer & npm run watchClient & nodemon dist/server/index.js"
+    "dev": "npm run watchServer & npm run watchClient & nodemon --inspect dist/server/index.js"
   },
   "author": "",
   "license": "ISC",
@@ -21,6 +21,7 @@
     "typescript": "^3.2.2"
   },
   "dependencies": {
+    "babel-polyfill": "^6.26.0",
     "express": "^4.16.4",
     "immutable": "^4.0.0-rc.12",
     "react": "^16.7.0",
