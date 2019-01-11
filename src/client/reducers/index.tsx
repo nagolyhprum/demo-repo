@@ -1,7 +1,11 @@
-import { combineReducers } from 'redux'
+import { combineReducers } from "redux";
 
-import total from "./total"
+import total, { ITotal } from "./total";
+
+export interface IState {
+ total: ITotal;
+}
 
 export default combineReducers({
-  total
-})
+  total,
+});

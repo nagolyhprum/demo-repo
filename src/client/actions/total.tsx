@@ -1,11 +1,17 @@
-export const TOTAL_ADD = "TOTAL_ADD"
+export const TOTAL_ADD = "TOTAL_ADD";
 
-export const add = () => ({
-  type : TOTAL_ADD
-})
+interface ITotal {
+  readonly type: string;
+}
 
-export const TOTAL_SUB = "TOTAL_SUB"
+export const add = (): ITotal => ({
+  type : TOTAL_ADD,
+});
 
-export const sub = () => ({
-  type : TOTAL_SUB
-})
+export const TOTAL_SUB = "TOTAL_SUB";
+
+export const sub = (): ITotal => ({
+  type : TOTAL_SUB,
+});
+
+export type Total = ITotal;
