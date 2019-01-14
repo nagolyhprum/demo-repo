@@ -2,6 +2,7 @@ import S3 = require("aws-sdk/clients/s3");
 import connectRedis from "connect-redis";
 import express from "express";
 import session from "express-session";
+import db from "./db";
 import graphQLMiddleware from "./graphql";
 
 const RedisStore = connectRedis(session);
@@ -47,6 +48,11 @@ app.use(session({
     port : 6379,
   }),
 }));
+
+app.use((req, _, next) => {
+  req.db = db;
+  next();
+});
 
 app.use("/graphql", graphQLMiddleware);
 

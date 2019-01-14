@@ -1,4 +1,3 @@
-import child_process from "child_process";
 import dotenv from "dotenv";
 dotenv.config();
 import app from "./app";
@@ -9,12 +8,21 @@ if (process.env.NODE_ENV === "production") {
     awsServerlessExpress.proxy(server, event, context);
   };
 } else {
-
+  const childProcess = require("child_process");
+  const db = require("./db").default;
   const aws = (service: string) => new Promise((resolve) => {
-    child_process.exec(`aws ${service}`, (err, out) => {
+    childProcess.exec(`aws ${service}`, (err: any, out: any) => {
       console.log("AWS", err, out);
       resolve();
     });
+  });
+
+  db.createTables((err: any) => {
+    if (err) {
+      console.log("Error creating tables: ", err);
+    } else {
+      console.log("Tables has been created");
+    }
   });
 
   aws("--endpoint http://localstack:4572/ s3api create-bucket --bucket lexicon_static").then(
