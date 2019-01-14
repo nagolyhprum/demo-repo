@@ -1,21 +1,27 @@
-import express from "express";
-import session from "express-session";
-import path from "path";
-import graphQLMiddleware from "./graphql";
+import child_process from "child_process";
+import dotenv from "dotenv";
+dotenv.config();
+import app from "./app";
+if (process.env.NODE_ENV === "production") {
+  const awsServerlessExpress = require("aws-serverless-express");
+  const server = awsServerlessExpress.createServer(app);
+  exports.handler = (event: any, context: any) => {
+    awsServerlessExpress.proxy(server, event, context);
+  };
+} else {
 
-const app = express();
+  const aws = (service: string) => new Promise((resolve) => {
+    child_process.exec(`aws ${service}`, (err, out) => {
+      console.log("AWS", err, out);
+      resolve();
+    });
+  });
 
-app.use(express.static(path.resolve(__dirname, "../client")));
+  aws("--endpoint http://localstack:4572/ s3api create-bucket --bucket lexicon_static").then(
+    () => aws("--endpoint http://localstack:4572/ s3 sync dist/client s3://lexicon_static"),
+  );
 
-app.use(session({
-  cookie: {
-    maxAge: 1000 * 60 * 60 * 24 * 30,
-  },
-  secret: "keyboard cat",
-}));
-
-app.use("/graphql", graphQLMiddleware);
-
-app.listen(8080, () => {
-  console.log("listening on port 8080");
-});
+  app.listen(80, () => {
+    console.log("listening on port 80");
+  });
+}

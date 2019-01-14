@@ -9,6 +9,26 @@ import {
   takeLatest,
 } from "redux-saga/effects";
 
+import { GraphQLClient } from "graphql-request";
+
+const client = new GraphQLClient("/graphql", {
+ credentials: "include",
+});
+
+const mutation = () => client.request(`
+  mutation {
+    hello(value : "abc")
+  }
+`).then((data) => console.log(data));
+
+const query = () => client.request(`
+  query {
+    hello
+  }
+`).then((data) => console.log(data));
+
+query().then(mutation).then(query);
+
 const getList = () => new Promise((resolve) => {
   resolve(["a", "b", "c"]);
 });

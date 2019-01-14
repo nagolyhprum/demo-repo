@@ -5,13 +5,14 @@
   "scripts": {
     "lint": "tslint -c tslint.json '**/*.tsx'",
     "watchServer": "parcel watch src/server/index.tsx --no-cache --target node --out-dir dist/server --no-source-maps",
-    "watchClient": "parcel watch src/client/index.html --no-cache --target browser --out-dir dist/client --no-source-maps",
-    "dev": "npm run watchServer & npm run watchClient & nodemon --inspect dist/server/index.js",
+    "watchClient": "parcel watch src/client/index.html --no-cache --target browser --out-dir dist/client --no-source-maps --hmr-port 1234",
+    "dev": "npm run watchServer & npm run watchClient & nodemon --watch dist --inspect=0.0.0.0:9229 dist/server/index.js",
     "test": "jest"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/dotenv": "^6.1.0",
     "@types/enzyme": "^3.1.15",
     "@types/express": "^4.16.0",
     "@types/express-graphql": "^0.6.2",
@@ -26,6 +27,7 @@
     "jest": "^23.6.0",
     "jest-environment-enzyme": "^7.0.1",
     "jest-enzyme": "^7.0.1",
+    "node-sass": "^4.11.0",
     "nodemon": "^1.18.9",
     "parcel-bundler": "^1.11.0",
     "sass": "^1.16.0",
@@ -34,11 +36,14 @@
     "typescript": "^3.2.2"
   },
   "dependencies": {
+    "aws-sdk": "^2.387.0",
     "babel-polyfill": "^6.26.0",
+    "dotenv": "^6.2.0",
     "express": "^4.16.4",
     "express-graphql": "^0.7.1",
     "express-session": "^1.15.6",
     "graphql": "^14.0.2",
+    "graphql-request": "^1.8.2",
     "immutable": "^4.0.0-rc.12",
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
