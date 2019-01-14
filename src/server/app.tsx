@@ -1,7 +1,10 @@
 import S3 = require("aws-sdk/clients/s3");
+import connectRedis from "connect-redis";
 import express from "express";
 import session from "express-session";
 import graphQLMiddleware from "./graphql";
+
+const RedisStore = connectRedis(session);
 
 const client = new S3({
   accessKeyId: "your s3 key",
@@ -36,7 +39,13 @@ app.use(session({
   cookie: {
     maxAge: 1000 * 60 * 60 * 24 * 30,
   },
+  resave: false,
+  saveUninitialized: false,
   secret: process.env.SESSION_SECRET,
+  store: new RedisStore({
+    host : "redis",
+    port : 6379,
+  }),
 }));
 
 app.use("/graphql", graphQLMiddleware);
