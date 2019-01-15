@@ -13,12 +13,15 @@ if (process.env.NODE_ENV !== "production") {
 const store = createStore(reducers, applyMiddleware(...middlewares));
 sagaMiddleware.run(mySaga);
 
-import { Route, Switch } from "react-router-dom";
+import { Route, Switch, withRouter, matchPath } from "react-router-dom";
 
 import routes from "../shared/routes";
 
 interface IAppProps {
   data: any;
+  match: any;
+  location: any;
+  history: any;
 }
 
 interface IAppState {
@@ -26,7 +29,7 @@ interface IAppState {
   usedData: boolean;
 }
 
-export default class App extends Component<IAppProps, IAppState> {
+class App extends Component<IAppProps, IAppState> {
   constructor(props: IAppProps) {
     super(props);
     this.state = {
@@ -35,13 +38,21 @@ export default class App extends Component<IAppProps, IAppState> {
     };
   }
   public componentDidMount() {
+    const { location, match } = this.props;
     if (this.props.data && !this.state.usedData) {
       this.setState({
         data : this.props.data.success || this.props.data.error,
         usedData : true,
       });
     } else {
-      
+      this.setState({
+        data : null
+      });
+      const route = routes.success.find(route => !!matchPath(location.pathname, route))
+      const promise = (route && route.fetchInitialData && route.fetchInitialData(match.params)) || Promise.resolve(null)
+      promise.then((data : any) => {
+        this.setState({ data });
+      })
     }
   }
   public render() {
@@ -66,3 +77,5 @@ export default class App extends Component<IAppProps, IAppState> {
     );
   }
 }
+
+export default withRouter(App)
