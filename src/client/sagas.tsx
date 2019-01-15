@@ -27,7 +27,7 @@ const query = () => client.request(`
   }
 `).then((data) => console.log(data));
 
-query().then(mutation).then(query);
+// query().then(mutation).then(query);
 
 const getList = () => new Promise((resolve) => {
   resolve(["a", "b", "c"]);
