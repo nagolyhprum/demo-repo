@@ -1,37 +1,73 @@
 import expressGraphQL from "express-graphql";
 
 import {
+  GraphQLBoolean,
+  GraphQLList,
+  GraphQLNonNull,
   GraphQLObjectType,
   GraphQLSchema,
   GraphQLString,
 } from "graphql";
 
+import {
+  ILanguage
+} from '../../shared/routes'
+
+interface IItem<E> {
+  attrs : E
+}
+
+interface IAWS<E> {
+  Items : Array<IItem<E>>
+}
+
+import {
+  Languages,
+} from "../db";
+
+const Language = new GraphQLObjectType({
+  fields : {
+    name : {
+      type : new GraphQLNonNull(GraphQLString),
+    },
+  },
+  name : "Language",
+});
+
 const schema = new GraphQLSchema({
   mutation: new GraphQLObjectType({
     fields: {
-      hello: {
-        args: {
-          value : {
-            type : GraphQLString,
+      addLanuage: {
+        args : {
+          name : {
+            type : new GraphQLNonNull(GraphQLString),
           },
         },
-        resolve(_1, args, context) {
-          const oldValue = context.session.value;
-          context.session.value = args.value;
-          return oldValue;
+        type: new GraphQLNonNull(GraphQLBoolean),
+        resolve(_1, args) {
+          return new Promise((resolve, reject) => {
+            Languages.create({
+              name : args.name,
+            }, (err : Error) => {
+              err ? reject(err) : resolve(true);
+            });
+          });
         },
-        type: GraphQLString,
       },
     },
     name: "RootMutationType",
   }),
   query: new GraphQLObjectType({
     fields: {
-      hello: {
-        type: GraphQLString,
-        resolve(_1, _2, context) {
-          return context.session.value;
+      getLanguages: {
+        async resolve() {
+          return new Promise((resolve, reject) => {
+            Languages.scan().attributes(["name"]).exec((err : Error, data : IAWS<ILanguage>) => {
+              err ? reject(err) : resolve(data.Items.map((it : IItem<ILanguage>) => it.attrs));
+            });
+          });
         },
+        type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(Language))),
       },
     },
     name: "RootQueryType",

@@ -1,25 +1,37 @@
-import url from "url";
-import Total from "../client/components/total";
-const resolve = (path: string) => url.resolve("http://localhost", path);
-const graphql = resolve("/graphql");
+import client from "../client/client";
+import Languages from "../client/components/languages";
 
-console.log(graphql);
+export interface ILanguage {
+  name : string;
+}
+
+interface IQuery {
+  getLanguages : Array<ILanguage>
+}
+
+interface IRoute {
+  component : any,
+  exact? : boolean,
+  fetchInitialData? : (params : any) => Promise<any>,
+  path? : string
+}
 
 export default {
-  success : [{
-    path: "/",
-    exact: true,
-    component: Total,
-    fetchInitialData: (params: any) => Promise.resolve([]),
-  }, {
-    path: "/abc",
-    exact: true,
-    component: Total,
-    fetchInitialData: (params: any) => Promise.reject(new Error("Hello World")),
-  }],
   error : {
+    component: Languages,
     exact: true,
-    component: Total,
-    fetchInitialData: (params: any) => Promise.resolve([]),
-  },
+    fetchInitialData: () => Promise.resolve([]),
+  } as IRoute,
+  success : [{
+    component: Languages,
+    exact: true,
+    fetchInitialData: () => client(`
+      {
+        getLanguages {
+          name
+        }
+      }
+    `).then((it) => (it as IQuery).getLanguages),
+    path: "/",
+  }] as Array<IRoute>,
 };

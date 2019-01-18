@@ -1,21 +1,35 @@
 import dotenv from "dotenv";
 dotenv.config();
+import S3 = require("aws-sdk/clients/s3");
+import express from "express";
+import path from "path";
 import app from "./app";
 if (process.env.NODE_ENV === "production") {
+  const client = new S3({
+    accessKeyId: "your s3 key",
+    apiVersion: "2006-03-01",
+    endpoint: "http://localstack:4572",
+    secretAccessKey: "your s3 secret",
+  });
   const awsServerlessExpress = require("aws-serverless-express");
-  const server = awsServerlessExpress.createServer(app);
+  const server = awsServerlessExpress.createServer(app((req, res, next) => {
+    const file = req.path.split("/").pop();
+    client.getObject({
+     Bucket: "lexicon_static",
+     Key: file || "index.html",
+   }, (err, data) => {
+      if (!err) {
+        res.end(data.Body, "binary");
+      } else {
+        next();
+      }
+    });
+  }));
   exports.handler = (event: any, context: any) => {
     awsServerlessExpress.proxy(server, event, context);
   };
 } else {
-  const childProcess = require("child_process");
   const db = require("./db").default;
-  const aws = (service: string) => new Promise((resolve) => {
-    childProcess.exec(`aws ${service}`, (err: any, out: any) => {
-      console.log("AWS", err, out);
-      resolve();
-    });
-  });
 
   db.createTables((err: any) => {
     if (err) {
@@ -25,11 +39,7 @@ if (process.env.NODE_ENV === "production") {
     }
   });
 
-  aws("--endpoint http://localstack:4572/ s3api create-bucket --bucket lexicon_static").then(
-    () => aws("--endpoint http://localstack:4572/ s3 sync dist/client s3://lexicon_static"),
-  );
-
-  app.listen(80, () => {
-    console.log("listening on port 80");
+  app(express.static(path.resolve(__dirname, "../client"))).listen(8080, () => {
+    console.log("listening on port 8080");
   });
 }

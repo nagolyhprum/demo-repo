@@ -8,17 +8,11 @@ dynamodb.AWS.config.update({
   secretAccessKey: "SECRET",
 });
 
-export const Account = dynamodb.define("Account", {
-  hashKey : "email",
+export const Languages = dynamodb.define("Languages", {
+  hashKey : "_id",
   schema : {
-    age     : Joi.number(),
-    email   : Joi.string().email(),
-    name    : Joi.string(),
-    roles   : dynamodb.types.stringSet(),
-    settings : {
-      acceptedTerms : Joi.boolean().default(false),
-      nickname      : Joi.string(),
-    },
+    _id : dynamodb.types.uuid(),
+    name : Joi.string().required(),
   },
   timestamps : true,
 });

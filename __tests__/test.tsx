@@ -5,7 +5,7 @@ import {
 } from "enzyme";
 import React from "react";
 
-import Total from "../src/client/components/total";
+import Languages from "../src/client/components/languages";
 
 describe("App", () => {
   it("works", () => {
@@ -13,7 +13,7 @@ describe("App", () => {
   });
   it("supports react", () => {
     const tag = shallow(
-      <Total/>,
+      <Languages data={[]}/>,
     );
     expect(tag).toBe(tag);
   });

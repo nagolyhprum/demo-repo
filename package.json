@@ -5,8 +5,8 @@
   "scripts": {
     "lint": "tslint -c tslint.json '**/*.tsx'",
     "watchServer": "parcel watch src/server/index.tsx --no-cache --target node --out-dir dist/server --no-source-maps",
-    "watchClient": "parcel watch src/client/index.tsx --no-cache --target browser --out-dir dist/client --no-source-maps --hmr-port 1234  --public-url /resources/",
-    "dev": "npm run watchServer & npm run watchClient & nodemon --watch dist --inspect=0.0.0.0:9229 dist/server/index.js",
+    "watchClient": "parcel watch src/client/index.tsx --no-cache --target browser --out-dir dist/client --no-source-maps --hmr-port 1234",
+    "dev": "npm run watchClient & npm run watchServer & nodemon --watch dist/server --inspect=0.0.0.0:9229 dist/server/index.js",
     "test": "jest"
   },
   "author": "",
@@ -36,7 +36,7 @@
     "sass": "^1.16.0",
     "ts-jest": "^23.10.5",
     "tslint": "^5.12.0",
-    "typescript": "^3.2.2"
+    "typescript": "^3.2.4"
   },
   "dependencies": {
     "aws-sdk": "^2.387.0",

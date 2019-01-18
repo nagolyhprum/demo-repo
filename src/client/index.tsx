@@ -15,3 +15,5 @@ ReactDom.hydrate(
   </BrowserRouter>,
   document.querySelector("#root"),
 );
+
+delete window.__INITIAL_DATA__;

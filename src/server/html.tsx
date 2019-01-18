@@ -30,7 +30,7 @@ export default class Html extends Component<IHtmlProps> {
     return (
       <html {...htmlAttributes}>
         <head>
-          <link href="/resources/index.css" rel="stylesheet"/>
+          <link href="/index.css" rel="stylesheet"/>
           {title}
           {meta}
           {link}
@@ -45,7 +45,7 @@ export default class Html extends Component<IHtmlProps> {
           <script dangerouslySetInnerHTML={{
             __html : `window.__INITIAL_DATA__=${JSON.stringify(this.props.data)}`,
           }}></script>
-          <script src="/resources/index.js"></script>
+          <script src="/index.js"></script>
           {script}
         </body>
       </html>
