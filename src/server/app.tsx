@@ -13,6 +13,7 @@ import routes from "../shared/routes";
 import db from "./db";
 import graphQLMiddleware from "./graphql";
 import Html from "./html";
+import { ServerStyleSheet } from 'styled-components'
 
 const RedisStore = connectRedis(session);
 
@@ -73,19 +74,24 @@ export default (resources: (req: Request, res: Response, next: NextFunction) => 
   });
 
   const useData = (req: Request, res: Response, data: any) => {
-    const root = ReactDOMServer.renderToString(
+    const sheet = new ServerStyleSheet()
+    const root = ReactDOMServer.renderToString(sheet.collectStyles(
       <StaticRouter location={req.url} context={{}}>
         <App data={data}/>
       </StaticRouter>,
-    );
+    ));
     const helmet = Helmet.renderStatic();
+    const styleTags = sheet.getStyleElement();
     res.send(ReactDOMServer.renderToStaticMarkup(
       <Html
         data={data}
         base={helmet.base.toComponent()}
         script={helmet.script.toComponent()}
         noscript={helmet.noscript.toComponent()}
-        style={helmet.style.toComponent()}
+        style={[
+          helmet.style.toComponent(),
+          ...styleTags
+        ]}
         htmlAttributes={helmet.htmlAttributes.toComponent()}
         bodyAttributes={helmet.bodyAttributes.toComponent()}
         title={helmet.title.toComponent()}

@@ -2,18 +2,18 @@ import client from "../client/client";
 import Languages from "../client/components/languages";
 
 export interface ILanguage {
-  name : string;
+  name: string;
 }
 
 interface IQuery {
-  getLanguages : Array<ILanguage>
+  getLanguages: ILanguage[];
 }
 
 interface IRoute {
-  component : any,
-  exact? : boolean,
-  fetchInitialData? : (params : any) => Promise<any>,
-  path? : string
+  component: any;
+  exact?: boolean;
+  fetchInitialData?: (params: any) => Promise<any>;
+  path?: string;
 }
 
 export default {
@@ -33,5 +33,5 @@ export default {
       }
     `).then((it) => (it as IQuery).getLanguages),
     path: "/",
-  }] as Array<IRoute>,
+  }] as IRoute[],
 };

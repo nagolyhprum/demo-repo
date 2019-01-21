@@ -44,7 +44,7 @@ class App extends Component<IAppProps, IAppState> {
       }, 3000);
     }
   }
-  public componentDidUpdate(prevProps : IAppProps | null) {
+  public componentDidUpdate(prevProps: IAppProps | null) {
     const { location, match } = this.props;
     if (!prevProps || location !== prevProps.location || match !== prevProps.match) {
       this.setState({

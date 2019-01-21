@@ -14,11 +14,13 @@ interface ILanguagesProps {
   data: any;
 }
 
+import { Root } from '../styles'
+
 class Languages extends Component<ILanguagesProps> {
   public render() {
     const languages = this.props.data;
     return (
-      <div>
+      <Root>
         <Helmet>
           <meta charSet="utf-8" />
           <title>My Title</title>
@@ -31,7 +33,7 @@ class Languages extends Component<ILanguagesProps> {
             );
           })
         }
-      </div>
+      </Root>
     );
   }
 }

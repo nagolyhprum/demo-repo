@@ -8,7 +8,7 @@ dynamodb.AWS.config.update({
   secretAccessKey: "SECRET",
 });
 
-export const Languages = dynamodb.define("Languages", {
+export const Language = dynamodb.define("Language", {
   hashKey : "_id",
   schema : {
     _id : dynamodb.types.uuid(),

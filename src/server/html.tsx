@@ -14,6 +14,9 @@ interface IHtmlProps {
   data: any;
 }
 
+// WARNING: See the following for security issues around embedding JSON in HTML:
+// http://redux.js.org/recipes/ServerRendering.html#security-considerations
+
 export default class Html extends Component<IHtmlProps> {
   public render() {
     const {
@@ -30,7 +33,6 @@ export default class Html extends Component<IHtmlProps> {
     return (
       <html {...htmlAttributes}>
         <head>
-          <link href="/index.css" rel="stylesheet"/>
           {title}
           {meta}
           {link}
@@ -43,7 +45,10 @@ export default class Html extends Component<IHtmlProps> {
             __html : this.props.root,
           }}></div>
           <script dangerouslySetInnerHTML={{
-            __html : `window.__INITIAL_DATA__=${JSON.stringify(this.props.data)}`,
+            __html : `window.__INITIAL_DATA__=${JSON.stringify(this.props.data).replace(
+              /</g,
+              "\\u003c",
+            )}`,
           }}></script>
           <script src="/index.js"></script>
           {script}

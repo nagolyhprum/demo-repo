@@ -10,22 +10,22 @@ import {
 } from "graphql";
 
 import {
-  ILanguage
-} from '../../shared/routes'
+  ILanguage,
+} from "../../shared/routes";
 
 interface IItem<E> {
-  attrs : E
+  attrs: E;
 }
 
 interface IAWS<E> {
-  Items : Array<IItem<E>>
+  Items: Array<IItem<E>>;
 }
 
 import {
-  Languages,
+  Language,
 } from "../db";
 
-const Language = new GraphQLObjectType({
+const LanguageGQL = new GraphQLObjectType({
   fields : {
     name : {
       type : new GraphQLNonNull(GraphQLString),
@@ -46,9 +46,9 @@ const schema = new GraphQLSchema({
         type: new GraphQLNonNull(GraphQLBoolean),
         resolve(_1, args) {
           return new Promise((resolve, reject) => {
-            Languages.create({
+            Language.create({
               name : args.name,
-            }, (err : Error) => {
+            }, (err: Error) => {
               err ? reject(err) : resolve(true);
             });
           });
@@ -62,12 +62,12 @@ const schema = new GraphQLSchema({
       getLanguages: {
         async resolve() {
           return new Promise((resolve, reject) => {
-            Languages.scan().attributes(["name"]).exec((err : Error, data : IAWS<ILanguage>) => {
-              err ? reject(err) : resolve(data.Items.map((it : IItem<ILanguage>) => it.attrs));
+            Language.scan().attributes(["name"]).exec((err: Error, data: IAWS<ILanguage>) => {
+              err ? reject(err) : resolve(data.Items.map((it: IItem<ILanguage>) => it.attrs));
             });
           });
         },
-        type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(Language))),
+        type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(LanguageGQL))),
       },
     },
     name: "RootQueryType",
